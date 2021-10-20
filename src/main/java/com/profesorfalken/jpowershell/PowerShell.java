@@ -85,35 +85,26 @@ public class PowerShell implements AutoCloseable {
      */
     public PowerShell configuration(Map<String, String> config) {
         if (config == null) {
+            this.waitPause = Integer.parseInt(PowerShellConfig.getConfig().getProperty("waitPause"));
+            this.maxWait = Long.parseLong(PowerShellConfig.getConfig().getProperty("maxWait"));
+            this.tempFolder = getTempFolder(PowerShellConfig.getConfig().getProperty("tempFolder"));
+
             return this;
         }
 
-        config.entrySet().forEach(stringStringEntry -> {
-            switch (stringStringEntry.getKey()) {
+        config.forEach((key, value) -> {
+            switch (key) {
                 case "waitPause":
-                    this.waitPause = Integer.parseInt(stringStringEntry.getValue());
+                    this.waitPause = Integer.parseInt(value);
                     break;
                 case "maxWait":
-                    this.maxWait = Long.valueOf(stringStringEntry.getValue());
+                    this.maxWait = Long.parseLong(value);
                     break;
                 case "tempFolder":
-                    this.tempFolder = getTempFolder(stringStringEntry.getValue());
+                    this.tempFolder = getTempFolder(value);
                     break;
             }
         });
-
-        /*try {
-            this.waitPause = Integer
-                    .valueOf((config != null && config.get("waitPause") != null) ? config.get("waitPause")
-                            : PowerShellConfig.getConfig().getProperty("waitPause"));
-            this.maxWait = Long.valueOf((config != null && config.get("maxWait") != null) ? config.get("maxWait")
-                    : PowerShellConfig.getConfig().getProperty("maxWait"));
-            this.tempFolder = (config != null && config.get("tempFolder") != null) ? getTempFolder(config.get("tempFolder"))
-                    : getTempFolder(PowerShellConfig.getConfig().getProperty("tempFolder"));
-        } catch (NumberFormatException nfe) {
-            logger.log(Level.SEVERE,
-                    "Could not read configuration. Using default values.", nfe);
-        }*/
 
         return this;
     }
@@ -307,7 +298,7 @@ public class PowerShell implements AutoCloseable {
      * @return boolean
      */
     public boolean isLastCommandInError() {
-        return !Boolean.valueOf(executeCommand("$?").getCommandOutput());
+        return !Boolean.parseBoolean(executeCommand("$?").getCommandOutput());
     }
 
     /**
@@ -331,7 +322,7 @@ public class PowerShell implements AutoCloseable {
      */
     @SuppressWarnings("WeakerAccess")
     public PowerShellResponse executeScript(String scriptPath, String params) {
-        try (BufferedReader srcReader = new BufferedReader(new FileReader(new File(scriptPath)))) {
+        try (BufferedReader srcReader = new BufferedReader(new FileReader(scriptPath))) {
             return executeScript(srcReader, params);
         } catch (FileNotFoundException fnfex) {
             logger.log(Level.SEVERE,
@@ -500,11 +491,11 @@ public class PowerShell implements AutoCloseable {
     private long getPID() {
         String commandOutput = executeCommand("$pid").getCommandOutput();
 
-        //Remove all non numeric characters
+        //Remove all non-numeric characters
         commandOutput = commandOutput.replaceAll("\\D", "");
 
         if (!commandOutput.isEmpty()) {
-            return Long.valueOf(commandOutput);
+            return Long.parseLong(commandOutput);
         }
 
         return -1;

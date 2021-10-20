@@ -8,7 +8,13 @@
     
     <name>jPowerShell</name>
     <description>API to use PowerShell from Java</description>
+
+
+    <url>https://github.com/AutoComplete1/jPowerShell</url>
+    <!--
+    original from profesorfalken:
     <url>https://github.com/profesorfalken/jPowerShell</url>
+    -->
 
     <licenses>
         <license>
@@ -115,7 +121,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

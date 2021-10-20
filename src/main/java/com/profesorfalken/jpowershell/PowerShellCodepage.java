@@ -201,7 +201,7 @@ class PowerShellCodepage {
     public static String getIdentifierByCodePageName(String cpName) {
         if (cpName != null) {
             for (Entry<String, String> codePage : codePages.entrySet()) {
-                if (codePage.getValue().toLowerCase().equals(cpName.toLowerCase())) {
+                if (codePage.getValue().equalsIgnoreCase(cpName)) {
                     return codePage.getKey();
                 }
             }
