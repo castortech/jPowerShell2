@@ -48,7 +48,7 @@ public class PowerShell implements AutoCloseable {
 
     // Threaded session variables
     private boolean closed = false;
-    private ExecutorService threadpool;
+    private ExecutorService executorService;
 
     //Default PowerShell executable path
     private static final String DEFAULT_WIN_EXECUTABLE = "powershell.exe";
@@ -84,7 +84,25 @@ public class PowerShell implements AutoCloseable {
      * @return instance to chain
      */
     public PowerShell configuration(Map<String, String> config) {
-        try {
+        if (config == null) {
+            return this;
+        }
+
+        config.entrySet().forEach(stringStringEntry -> {
+            switch (stringStringEntry.getKey()) {
+                case "waitPause":
+                    this.waitPause = Integer.parseInt(stringStringEntry.getValue());
+                    break;
+                case "maxWait":
+                    this.maxWait = Long.valueOf(stringStringEntry.getValue());
+                    break;
+                case "tempFolder":
+                    this.tempFolder = getTempFolder(stringStringEntry.getValue());
+                    break;
+            }
+        });
+
+        /*try {
             this.waitPause = Integer
                     .valueOf((config != null && config.get("waitPause") != null) ? config.get("waitPause")
                             : PowerShellConfig.getConfig().getProperty("waitPause"));
@@ -95,7 +113,8 @@ public class PowerShell implements AutoCloseable {
         } catch (NumberFormatException nfe) {
             logger.log(Level.SEVERE,
                     "Could not read configuration. Using default values.", nfe);
-        }
+        }*/
+
         return this;
     }
 
@@ -122,10 +141,25 @@ public class PowerShell implements AutoCloseable {
      * @throws PowerShellNotAvailableException if PowerShell is not installed in the system
      */
     public static PowerShell openSession(String customPowerShellExecutablePath) throws PowerShellNotAvailableException {
+        return openSession(customPowerShellExecutablePath, null);
+    }
+
+    /**
+     * Creates a session in PowerShell console an returns an instance which allows
+     * to execute commands in PowerShell context.<br>
+     * This method allows to define a PowersShell executable path different from default
+     *
+     * @param customPowerShellExecutablePath the path of powershell executable. If you are using
+     *                                       the default installation path, call {@link #openSession()} method instead
+     * @param config                         map with the configuration in key/value format
+     * @return an instance of the class
+     * @throws PowerShellNotAvailableException if PowerShell is not installed in the system
+     */
+    public static PowerShell openSession(String customPowerShellExecutablePath, Map<String, String> config) throws PowerShellNotAvailableException {
         PowerShell powerShell = new PowerShell();
 
         // Start with default configuration
-        powerShell.configuration(null);
+        powerShell.configuration(config);
 
         String powerShellExecutablePath = customPowerShellExecutablePath == null ? (OSDetector.isWindows() ? DEFAULT_WIN_EXECUTABLE : DEFAULT_LINUX_EXECUTABLE) : customPowerShellExecutablePath;
 
@@ -165,7 +199,7 @@ public class PowerShell implements AutoCloseable {
         this.commandWriter = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(p.getOutputStream())), true);
 
         // Init thread pool. 2 threads are needed: one to write and read console and the other to close it
-        this.threadpool = Executors.newFixedThreadPool(2);
+        this.executorService = Executors.newFixedThreadPool(2);
 
         //Get and store the PID of the process
         this.pid = getPID();
@@ -192,7 +226,7 @@ public class PowerShell implements AutoCloseable {
 
         PowerShellCommandProcessor commandProcessor = new PowerShellCommandProcessor("standard", p.getInputStream(),
                 this.waitPause, this.scriptMode);
-        Future<String> result = threadpool.submit(commandProcessor);
+        Future<String> result = executorService.submit(commandProcessor);
 
         // Launch command
         commandWriter.println(command);
@@ -394,7 +428,7 @@ public class PowerShell implements AutoCloseable {
     public void close() {
         if (!this.closed) {
             try {
-                Future<String> closeTask = threadpool.submit(() -> {
+                Future<String> closeTask = executorService.submit(() -> {
                     commandWriter.println("exit");
                     p.waitFor();
                     return "OK";
@@ -424,10 +458,10 @@ public class PowerShell implements AutoCloseable {
                     logger.log(Level.SEVERE,
                             "Unexpected error when when closing streams", ex);
                 }
-                if (this.threadpool != null) {
+                if (this.executorService != null) {
                     try {
-                        this.threadpool.shutdownNow();
-                        this.threadpool.awaitTermination(5, TimeUnit.SECONDS);
+                        this.executorService.shutdownNow();
+                        this.executorService.awaitTermination(5, TimeUnit.SECONDS);
                     } catch (InterruptedException ex) {
                         logger.log(Level.SEVERE,
                                 "Unexpected error when when shutting down thread pool", ex);
