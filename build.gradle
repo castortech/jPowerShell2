@@ -20,7 +20,7 @@ dependencies {
 
 group = 'com.github.autocomplete'
 version = '1.0.0'
-description = 'jPowerShell2'
+description = 'Simple Java API to interact with PowerShell console'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
