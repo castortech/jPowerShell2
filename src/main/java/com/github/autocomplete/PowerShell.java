@@ -84,27 +84,31 @@ public class PowerShell implements AutoCloseable {
      * @return instance to chain
      */
     public PowerShell configuration(Map<String, String> config) {
-        if (config == null) {
-            this.waitPause = Integer.parseInt(PowerShellConfig.getConfig().getProperty("waitPause"));
-            this.maxWait = Long.parseLong(PowerShellConfig.getConfig().getProperty("maxWait"));
-            this.tempFolder = getTempFolder(PowerShellConfig.getConfig().getProperty("tempFolder"));
+        if (config == null && PowerShellConfig.getConfig().getProperty("waitPause") == null) {
+            return this;
+        }
+
+        if (config != null) {
+            config.forEach((key, value) -> {
+                switch (key) {
+                    case "waitPause":
+                        this.waitPause = Integer.parseInt(value);
+                        break;
+                    case "maxWait":
+                        this.maxWait = Long.parseLong(value);
+                        break;
+                    case "tempFolder":
+                        this.tempFolder = getTempFolder(value);
+                        break;
+                }
+            });
 
             return this;
         }
 
-        config.forEach((key, value) -> {
-            switch (key) {
-                case "waitPause":
-                    this.waitPause = Integer.parseInt(value);
-                    break;
-                case "maxWait":
-                    this.maxWait = Long.parseLong(value);
-                    break;
-                case "tempFolder":
-                    this.tempFolder = getTempFolder(value);
-                    break;
-            }
-        });
+        this.waitPause = Integer.parseInt(PowerShellConfig.getConfig().getProperty("waitPause"));
+        this.maxWait = Long.parseLong(PowerShellConfig.getConfig().getProperty("maxWait"));
+        this.tempFolder = getTempFolder(PowerShellConfig.getConfig().getProperty("tempFolder"));
 
         return this;
     }
