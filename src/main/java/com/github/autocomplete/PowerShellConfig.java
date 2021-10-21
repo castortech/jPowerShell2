@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.profesorfalken.jpowershell;
+package com.github.autocomplete;
 
 import java.io.IOException;
 import java.util.Properties;

@@ -2,7 +2,7 @@
 ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)
 ![](https://travis-ci.org/profesorfalken/jPowerShell.svg)
 
-# jPowerShell
+# jPowerShell2
 
 Simple Java API that allows to interact with PowerShell console
 
