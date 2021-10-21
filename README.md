@@ -1,39 +1,28 @@
 
 ![](https://img.shields.io/maven-central/v/com.profesorfalken/jPowerShell.svg)  ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)  [![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master.svg?style=shield)](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master)
 
-# jPowerShell2
-### 🧑‍🏫 About
+## 🧑‍🏫 About
 
 jPowerShell2 is a fork of [jPowerShell](https://github.com/profesorfalken/jPowerShell) from [profesorfalken](https://github.com/profesorfalken). Unfortunately, nothing has been changed on the project since 2019. After I found the project very good and needed it, I decided to develop it further with the name jPowerShell2. If there are any errors or wishes, please feel free to open issues with detailed information.
 
----
-
-Simple Java API that allows to interact with PowerShell console
-
-```java  
-    PowerShell.openSession()  
-              .executeCommandAndChain("Get-Process", (res -> System.out.println("List Processes:" + res.getCommandOutput())))  
-              .executeCommandAndChain("Get-WmiObject Win32_BIOS", (res -> System.out.println("BIOS information:" + res.getCommandOutput())))  
-              .close();  
-```  
-
-#### New JPowerShell v3 is out
-
-The version 3 of JPowerShell includes an important revision and rewrite of most of the code that improves performance and stability.
-
-Check all the new features here: https://github.com/profesorfalken/jPowerShell/wiki/New-3.0-version-of-PowerShell
-
-## Installation
+## 💻 Installation  (currently not jPowerShell2!)
 
 To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/com.profesorfalken/jPowerShell/3.1.1/jar
 
 For example, for Maven you have just to add to your pom.xml:
+ ```
+<dependency> 
+    <groupId>com.profesorfalken</groupId>
+    <artifactId>jPowerShell</artifactId>
+    <version>3.1.1</version>
+    <scope>compile</scope>
+</dependency> 
+``` 
 
- <dependency> <groupId>com.profesorfalken</groupId> <artifactId>jPowerShell</artifactId> <version>3.1.1</version> </dependency>  
 Instead, you can direct download the JAR file and add it to your classpath.   
-https://repo1.maven.org/maven2/com/profesorfalken/jPowerShell/3.1.1/jPowerShell-3.1.1.jar  
+https://repo1.maven.org/maven2/com/profesorfalken/jPowerShell/3.1.1/jPowerShell-3.1.1.jar
 
-## Basic Usage
+## ⚡️ Usage
 
 ### Single command execution
 
@@ -80,7 +69,7 @@ You can also choose to execute the same commands with a more fluent style using 
                     .close();  
 ```  
 
-### Configure jPowerShell Session ####  
+### Configure jPowerShell Session
 
 You can easily configure the jPowerShell session:
 
@@ -104,8 +93,6 @@ The variables that can be configured in jPowerShell are:
 
 *tempFolder*: if you set this variable jPowerShell will use this folder in order to store temporary the scripts to execute.  
 By default the environment variable _java.io.tmpdir_ will be used.
-
-## Advanced usage
 
 ### Setting the PowerShell executable path
 
