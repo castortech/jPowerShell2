@@ -1,6 +1,6 @@
 ![](https://img.shields.io/maven-central/v/com.profesorfalken/jPowerShell.svg)
 ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)
-![](https://travis-ci.org/profesorfalken/jPowerShell.svg)
+[![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell/tree/master.svg?style=svg)](https://circleci.com/gh/AutoComplete1/jPowerShell/tree/master)
 
 # jPowerShell2
 
