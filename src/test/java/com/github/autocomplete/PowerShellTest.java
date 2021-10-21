@@ -1,4 +1,4 @@
-package com.profesorfalken.jpowershell;
+package com.github.autocomplete;
 
 import org.junit.Assert;
 import org.junit.Rule;
