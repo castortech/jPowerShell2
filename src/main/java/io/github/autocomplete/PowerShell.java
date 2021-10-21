@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.autocomplete;
+package io.github.autocomplete;
 
 import java.io.*;
 import java.nio.charset.Charset;

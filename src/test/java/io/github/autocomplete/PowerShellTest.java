@@ -1,4 +1,4 @@
-package com.github.autocomplete;
+package io.github.autocomplete;
 
 import org.junit.Assert;
 import org.junit.Rule;
