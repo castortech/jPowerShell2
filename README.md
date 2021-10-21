@@ -1,7 +1,5 @@
 
-![](https://img.shields.io/maven-central/v/com.profesorfalken/jPowerShell.svg)  
-![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)  
-[![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master.svg?style=shield)](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master)
+![](https://img.shields.io/maven-central/v/com.profesorfalken/jPowerShell.svg)  ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)  [![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master.svg?style=shield)](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master)
 
 # jPowerShell2
 ### 🧑‍🏫 About
