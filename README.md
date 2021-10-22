@@ -14,18 +14,18 @@ Maven:
 <dependency> 
     <groupId>io.github.autocomplete1</groupId>
     <artifactId>jPowerShell2</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <scope>compile</scope>
 </dependency> 
 ``` 
 
 Gradle:
 ```
-implementation 'io.github.autocomplete1:jPowerShell2:1.0.0'
+implementation 'io.github.autocomplete1:jPowerShell2:1.0.1'
 ```
 
 Instead, you can direct download the JAR file and add it to your classpath.   
-https://repo1.maven.org/maven2/io/github/autocomplete1/jPowerShell2/1.0.0/jPowerShell2-1.0.0.jar
+https://repo1.maven.org/maven2/io/github/autocomplete1/jPowerShell2/1.0.1/jPowerShell2-1.0.1.jar
 
 ## ⚡️ Usage
 

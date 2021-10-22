@@ -22,6 +22,6 @@ package io.github.autocomplete1;
  * @author Javier Garcia Alonso
  */
 @FunctionalInterface
-interface PowerShellResponseHandler {
+public interface PowerShellResponseHandler {
     void handle(PowerShellResponse response);
 }
