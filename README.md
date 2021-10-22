@@ -7,7 +7,7 @@ jPowerShell2 is a fork of [jPowerShell](https://github.com/profesorfalken/jPower
 
 ## 💻 Installation
 
-To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/io.github.autocomplete1/jPowerShell2/1.0.0/jar
+To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/io.github.autocomplete1/jPowerShell2/1.0.1/jar
 
 Maven:
  ```
