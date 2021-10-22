@@ -1,20 +1,20 @@
 
-![](https://img.shields.io/maven-central/v/com.profesorfalken/jPowerShell.svg)  ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)  [![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master.svg?style=shield)](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master)
+![](https://img.shields.io/maven-central/v/io.github.autocomplete1/jPowerShell2.svg)  ![](https://img.shields.io/github/license/profesorfalken/jPowerShell.svg)  [![CircleCI](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master.svg?style=shield)](https://circleci.com/gh/AutoComplete1/jPowerShell2/tree/master)
 
 ## 🧑‍🏫 About
 
 jPowerShell2 is a fork of [jPowerShell](https://github.com/profesorfalken/jPowerShell) from [profesorfalken](https://github.com/profesorfalken). Unfortunately, nothing has been changed on the project since 2019. After I found the project very good and needed it, I decided to develop it further with the name jPowerShell2. If there are any errors or wishes, please feel free to open issues with detailed information.
 
-## 💻 Installation  (currently not jPowerShell2!)
+## 💻 Installation
 
 To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/com.profesorfalken/jPowerShell/3.1.1/jar
 
 For example, for Maven you have just to add to your pom.xml:
  ```
 <dependency> 
-    <groupId>com.profesorfalken</groupId>
-    <artifactId>jPowerShell</artifactId>
-    <version>3.1.1</version>
+    <groupId>io.github.autocomplete1</groupId>
+    <artifactId>jPowerShell2</artifactId>
+    <version>1.0.0</version>
     <scope>compile</scope>
 </dependency> 
 ``` 

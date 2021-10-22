@@ -3,4 +3,5 @@
 /.project
 /.idea/
 /.gradle/
+/secring.gpg
 jPowerShell.iml
