@@ -16,7 +16,7 @@
 package io.github.autocomplete1;
 
 /**
- * Response of PowerShell command. This object encapsulate all the useful
+ * Response of PowerShell command. This object encapsulates all the useful
  * returned information
  *
  * @author Javier Garcia Alonso

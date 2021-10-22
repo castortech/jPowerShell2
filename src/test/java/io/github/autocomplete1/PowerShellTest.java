@@ -1,9 +1,7 @@
 package io.github.autocomplete1;
 
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.*;
 import java.util.Date;
@@ -20,9 +18,6 @@ import java.util.logging.Logger;
 public class PowerShellTest {
 
     private static final String CRLF = "\r\n";
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     /**
      * Test of openSession method, of class PowerShell.
@@ -108,7 +103,7 @@ public class PowerShellTest {
             System.out.println("Empty response:" + response.getCommandOutput());
 
             Assert.assertFalse(powerShell.isLastCommandInError());
-            Assert.assertTrue("".equals(response.getCommandOutput()));
+            Assert.assertEquals("", response.getCommandOutput());
 
             powerShell.close();
         }
@@ -183,11 +178,9 @@ public class PowerShellTest {
     @Test
     public void testExample() {
         System.out.println("testExample");
-        PowerShell powerShell = null;
-        try {
+        try (PowerShell powerShell = PowerShell.openSession()) {
             // Creates PowerShell session (we can execute several commands in
             // the same session)
-            powerShell = PowerShell.openSession();
 
             // Execute a command in PowerShell session
             PowerShellResponse response = powerShell.executeCommand("Get-Process");
@@ -205,18 +198,14 @@ public class PowerShellTest {
             // Maybe try in another way?
             // Assert.assertNull("PowerShellNotAvailableException", ex); //Commented to let
             // Travis pass the tests
-        } finally {
-            // Always close PowerShell session to free resources.
-            if (powerShell != null) {
-                powerShell.close();
-            }
         }
+        // Always close PowerShell session to free resources.
     }
 
     /**
      * Test github example.
      */
-    @Test(expected = Test.None.class /* no exception expected */)
+    @Test
     public void testFunctionalExample() {
         System.out.println("testFunctionalExample");
         if (OSDetector.isWindows()) {
@@ -224,27 +213,6 @@ public class PowerShellTest {
                     .executeCommandAndChain("Get-Process", (res -> System.out.println("List Processes:" + res.getCommandOutput())))
                     .executeCommandAndChain("Get-WmiObject Win32_BIOS", (res -> System.out.println("BIOS information:" + res.getCommandOutput())))
                     .close();
-        }
-    }
-
-    /**
-     * Test other executable from default one
-     */
-    public void testOtherExecutablePath() {
-        PowerShell powerShell = null;
-        if (OSDetector.isWindows()) {
-            try {
-                powerShell = PowerShell.openSession("powerShell2.exe");
-
-                //Should throw a PowerShellNotAvailableException
-                exception.expect(PowerShellNotAvailableException.class);
-                PowerShellResponse response = powerShell.executeCommand("Get-Process");
-            } finally {
-                // Always close PowerShell session to free resources.
-                if (powerShell != null) {
-                    powerShell.close();
-                }
-            }
         }
     }
 
@@ -317,12 +285,9 @@ public class PowerShellTest {
     public void testLoop() {
         System.out.println("testLoop");
         if (OSDetector.isWindows()) {
-            PowerShell powerShell = null;
-            try {
-                powerShell = PowerShell.openSession();
+            try (PowerShell powerShell = PowerShell.openSession()) {
                 for (int i = 0; i < 10; i++) {
                     System.out.print("Cycle: " + i);
-                    // Thread.sleep(3000);
 
                     String output = powerShell.executeCommand("date").getCommandOutput().trim();
 
@@ -331,12 +296,8 @@ public class PowerShellTest {
             } catch (PowerShellNotAvailableException ex) {
                 // Handle error when PowerShell is not available in the system
                 // Maybe try in another way?
-            } finally {
-                // Always close PowerShell session to free resources.
-                if (powerShell != null) {
-                    powerShell.close();
-                }
             }
+            // Always close PowerShell session to free resources.
         }
     }
 
@@ -347,13 +308,10 @@ public class PowerShellTest {
     public void testLongLoop() {
         System.out.println("testLongLoop");
         if (OSDetector.isWindows()) {
-            PowerShell powerShell = null;
-            try {
-                powerShell = PowerShell.openSession();
+            try (PowerShell powerShell = PowerShell.openSession()) {
                 for (int i = 0; i < 100; i++) {
                     System.out.print("Cycle: " + i);
 
-                    // Thread.sleep(100);
                     PowerShellResponse response = powerShell.executeCommand("date"); // Line
                     // 17
                     // (see
@@ -370,12 +328,8 @@ public class PowerShellTest {
             } catch (PowerShellNotAvailableException ex) {
                 // Handle error when PowerShell is not available in the system
                 // Maybe try in another way?
-            } finally {
-                // Always close PowerShell session to free resources.
-                if (powerShell != null) {
-                    powerShell.close();
-                }
             }
+            // Always close PowerShell session to free resources.
         }
     }
 
@@ -387,7 +341,7 @@ public class PowerShellTest {
         System.out.println("testTimeout");
         if (OSDetector.isWindows()) {
             PowerShell powerShell = PowerShell.openSession();
-            PowerShellResponse response = null;
+            PowerShellResponse response;
             try {
                 response = powerShell.executeCommand("Start-Sleep -s 15");
             } finally {
@@ -423,7 +377,7 @@ public class PowerShellTest {
         if (OSDetector.isWindows()) {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
-            PowerShellResponse response = null;
+            PowerShellResponse response;
 
             StringBuilder scriptContent = new StringBuilder();
             scriptContent.append("Write-Host \"First message\"").append(CRLF);
@@ -449,7 +403,7 @@ public class PowerShellTest {
         if (OSDetector.isWindows()) {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
-            PowerShellResponse response = null;
+            PowerShellResponse response;
 
             StringBuilder scriptContent = new StringBuilder();
             scriptContent.append("Write-Host \"First message\"").append(CRLF);
@@ -457,9 +411,9 @@ public class PowerShellTest {
             BufferedReader srcReader = null;
             try {
                 srcReader = new BufferedReader(new FileReader(generateScript(scriptContent.toString())));
-            } catch (FileNotFoundException fnfex) {
+            } catch (FileNotFoundException fileNotFoundException) {
                 Logger.getLogger(PowerShell.class.getName()).log(Level.SEVERE,
-                        "Unexpected error when processing PowerShell script: file not found", fnfex);
+                        "Unexpected error when processing PowerShell script: file not found", fileNotFoundException);
             }
 
             Assert.assertNotNull("Cannot create reader from temp file", srcReader);
@@ -486,17 +440,17 @@ public class PowerShellTest {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
             config.put("maxWait", "80000");
-            PowerShellResponse response = null;
+            PowerShellResponse response;
 
             StringBuilder scriptContent = new StringBuilder();
             scriptContent.append("Write-Host \"First message\"").append(CRLF);
             scriptContent.append("$output = \"c:\\10meg.test\"").append(CRLF);
             scriptContent.append(
-                    "(New-Object System.Net.WebClient).DownloadFile(\"http://ipv4.download.thinkbroadband.com/10MB.zip\",$output)")
+                            "(New-Object System.Net.WebClient).DownloadFile(\"http://ipv4.download.thinkbroadband.com/10MB.zip\",$output)")
                     .append(CRLF);
             scriptContent.append("Write-Host \"Second message\"").append(CRLF);
             scriptContent.append(
-                    "(New-Object System.Net.WebClient).DownloadFile(\"http://ipv4.download.thinkbroadband.com/10MB.zip\",$output)")
+                            "(New-Object System.Net.WebClient).DownloadFile(\"http://ipv4.download.thinkbroadband.com/10MB.zip\",$output)")
                     .append(CRLF);
             scriptContent.append("Write-Host \"Finish!\"").append(CRLF);
 
@@ -528,8 +482,7 @@ public class PowerShellTest {
             powerShell.close();
 
             //Should throw a RejectedExecutionException
-            exception.expect(IllegalStateException.class);
-            powerShell.executeCommand("Get-Process");
+            Assert.assertThrows(IllegalStateException.class, () -> powerShell.executeCommand("Get-Process"));
         }
     }
 
@@ -543,7 +496,7 @@ public class PowerShellTest {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
             config.put("maxWait", "1000");
-            PowerShellResponse response = null;
+            PowerShellResponse response;
             try {
                 response = powerShell.configuration(config).executeCommand("Start-Sleep -s 10; Get-Process");
             } finally {
@@ -565,7 +518,7 @@ public class PowerShellTest {
         if (OSDetector.isWindows()) {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
-            PowerShellResponse response = null;
+            PowerShellResponse response;
 
             StringBuilder scriptContent = new StringBuilder();
             scriptContent.append("Param([string]$computerName)").append(CRLF);
@@ -613,11 +566,9 @@ public class PowerShellTest {
         if (OSDetector.isWindows()) {
             PowerShell powerShell = PowerShell.openSession();
             Map<String, String> config = new HashMap<>();
-            PowerShellResponse response = null;
+            PowerShellResponse response;
 
-            StringBuilder scriptContent = new StringBuilder();
-            scriptContent.append("Write-Host \"First message\"").append(CRLF);
-            response = powerShell.configuration(config).executeScript(generateScript(scriptContent.toString()));
+            response = powerShell.configuration(config).executeScript(generateScript("Write-Host \"First message\"" + CRLF));
 
             Assert.assertNotNull("Response null!", response);
             if (!response.getCommandOutput().contains("UnauthorizedAccess")) {
@@ -639,7 +590,7 @@ public class PowerShellTest {
     }
 
     private static String generateScript(String scriptContent) throws Exception {
-        File tmpFile = null;
+        File tmpFile;
         FileWriter writer = null;
 
         try {

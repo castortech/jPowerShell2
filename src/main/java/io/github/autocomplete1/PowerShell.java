@@ -46,6 +46,8 @@ public class PowerShell implements AutoCloseable {
     // Writer to send commands
     private PrintWriter commandWriter;
 
+    private BufferedReader outputReader;
+
     // Threaded session variables
     private boolean closed = false;
     private ExecutorService executorService;
@@ -68,7 +70,7 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Allows to override jPowerShell configuration using a map of key/value <br>
+     * Allows overriding jPowerShell configuration using a map of key/value <br>
      * Default values are taken from file <i>jpowershell.properties</i>, which can
      * be replaced just setting it on project classpath
      * <p>
@@ -114,8 +116,8 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Creates a session in PowerShell console an returns an instance which allows
-     * to execute commands in PowerShell context.<br>
+     * Creates a session in PowerShell console which returns an instance which allows
+     * executing commands in PowerShell context.<br>
      * It uses the default PowerShell installation in the system.
      *
      * @return an instance of the class
@@ -126,8 +128,8 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Creates a session in PowerShell console an returns an instance which allows
-     * to execute commands in PowerShell context.<br>
+     * Creates a session in PowerShell console which returns an instance which allows
+     * executing commands in PowerShell context.<br>
      * This method allows to define a PowersShell executable path different from default
      *
      * @param customPowerShellExecutablePath the path of powershell executable. If you are using
@@ -140,8 +142,8 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Creates a session in PowerShell console an returns an instance which allows
-     * to execute commands in PowerShell context.<br>
+     * Creates a session in PowerShell console which returns an instance which allows
+     * executing commands in PowerShell context.<br>
      * This method allows to define a PowersShell executable path different from default
      *
      * @param customPowerShellExecutablePath the path of powershell executable. If you are using
@@ -158,11 +160,11 @@ public class PowerShell implements AutoCloseable {
 
         String powerShellExecutablePath = customPowerShellExecutablePath == null ? (OSDetector.isWindows() ? DEFAULT_WIN_EXECUTABLE : DEFAULT_LINUX_EXECUTABLE) : customPowerShellExecutablePath;
 
-        return powerShell.initalize(powerShellExecutablePath);
+        return powerShell.initialize(powerShellExecutablePath);
     }
 
     // Initializes PowerShell console in which we will enter the commands
-    private PowerShell initalize(String powerShellExecutablePath) throws PowerShellNotAvailableException {
+    private PowerShell initialize(String powerShellExecutablePath) throws PowerShellNotAvailableException {
         String codePage = PowerShellCodepage.getIdentifierByCodePageName(Charset.defaultCharset().name());
         ProcessBuilder pb;
 
@@ -193,6 +195,8 @@ public class PowerShell implements AutoCloseable {
         //Prepare writer that will be used to send commands to powershell
         this.commandWriter = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(p.getOutputStream())), true);
 
+        this.outputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
         // Init thread pool. 2 threads are needed: one to write and read console and the other to close it
         this.executorService = Executors.newFixedThreadPool(2);
 
@@ -219,8 +223,7 @@ public class PowerShell implements AutoCloseable {
 
         checkState();
 
-        PowerShellCommandProcessor commandProcessor = new PowerShellCommandProcessor("standard", p.getInputStream(),
-                this.waitPause, this.scriptMode);
+        PowerShellCommandProcessor commandProcessor = new PowerShellCommandProcessor(this.outputReader, this.waitPause, this.scriptMode);
         Future<String> result = executorService.submit(commandProcessor);
 
         // Launch command
@@ -251,7 +254,7 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Execute a single command in PowerShell consolscriptModee and gets result
+     * Execute a single command in PowerShell console scriptMode and gets result
      *
      * @param command the command to execute
      * @return response with the output of the command
@@ -269,7 +272,7 @@ public class PowerShell implements AutoCloseable {
     }
 
     /**
-     * Allows to chain command executions providing a more fluent API.<p>
+     * Allows chaining command executions providing a more fluent API.<p>
      * <p>
      * This method allows also to optionally handle the response in a closure
      *
@@ -447,7 +450,7 @@ public class PowerShell implements AutoCloseable {
                 commandWriter.close();
                 try {
                     if (p.isAlive()) {
-                        p.getInputStream().close();
+                        outputReader.close();
                     }
                 } catch (IOException ex) {
                     logger.log(Level.SEVERE,
