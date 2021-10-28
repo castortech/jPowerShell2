@@ -105,7 +105,9 @@ class PowerShellCommandProcessor implements Callable<String> {
     private boolean startReading() throws IOException, InterruptedException {
         //If the reader is not ready, gives it some milliseconds
         while (!this.outputReader.ready()) {
-            Thread.sleep(this.waitPause);
+            synchronized (this) {
+                wait(this.waitPause);
+            }
             if (this.closed) {
                 return false;
             }
@@ -118,12 +120,16 @@ class PowerShellCommandProcessor implements Callable<String> {
         //If the reader is not ready, gives it some milliseconds
         //It is important to do that, because the ready method guarantees that the readline will not be blocking
         if (!this.outputReader.ready()) {
-            Thread.sleep(this.waitPause);
+            synchronized (this) {
+                wait(this.waitPause);
+            }
         }
 
         //If not ready yet, wait a moment to make sure it is finished
         if (!this.outputReader.ready()) {
-            Thread.sleep(50);
+            synchronized (this) {
+                wait(50);
+            }
         }
 
         return this.outputReader.ready();

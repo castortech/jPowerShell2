@@ -7,25 +7,25 @@ jPowerShell2 is a fork of [jPowerShell](https://github.com/profesorfalken/jPower
 
 ## 💻 Installation
 
-To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/io.github.autocomplete1/jPowerShell2/1.0.2/jar
+To install jPowerShell you can add the dependecy to your software project management tool: https://search.maven.org/artifact/io.github.autocomplete1/jPowerShell2/1.0.3/jar
 
 Maven:
  ```
 <dependency> 
     <groupId>io.github.autocomplete1</groupId>
     <artifactId>jPowerShell2</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <scope>compile</scope>
 </dependency> 
 ``` 
 
 Gradle:
 ```
-implementation 'io.github.autocomplete1:jPowerShell2:1.0.2'
+implementation 'io.github.autocomplete1:jPowerShell2:1.0.3'
 ```
 
 Instead, you can direct download the JAR file and add it to your classpath.   
-https://repo1.maven.org/maven2/io/github/autocomplete1/jPowerShell2/1.0.2/jPowerShell2-1.0.2.jar
+https://repo1.maven.org/maven2/io/github/autocomplete1/jPowerShell2/1.0.3/jPowerShell2-1.0.3.jar
 
 ## ⚡️ Usage
 
