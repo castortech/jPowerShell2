@@ -22,44 +22,76 @@ package io.github.autocomplete1;
  * @author Javier Garcia Alonso
  */
 public class PowerShellResponse {
+	private final boolean error;
+	private final String commandOutput;
+	private final String errorOutput;
+	private final boolean timeout;
 
-    private final boolean error;
-    private final String commandOutput;
-    private final boolean timeout;
+	public PowerShellResponse(boolean isError, String commandOutput, String errorOutput, boolean timeout) {
+		this.error = isError;
+		this.commandOutput = commandOutput;
+		this.errorOutput = errorOutput;
+		this.timeout = timeout;
+	}
+	
+	public PowerShellResponse(boolean isError, PowerShellResult commandResult, boolean timeout) {
+		this.error = isError;
+		this.commandOutput = commandResult.getCommandOutput();
+		this.errorOutput = commandResult.getErrorOutput();
+		this.timeout = timeout;
+	}
 
-    PowerShellResponse(boolean isError, String commandOutput, boolean timeout) {
-        this.error = isError;
-        this.commandOutput = commandOutput;
-        this.timeout = timeout;
-    }
+	/**
+	 * True if the command could not be correctly executed (timeout or unexpected error)<p>
+	 *
+	 * If you want to check if the command itself finished in error, use the method {@link PowerShell#isLastCommandInError()}
+	 * instead
+	 *
+	 * @return boolean value
+	 */
+	public boolean isError() {
+		return error;
+	}
 
-    /**
-     * True if the command could not be correctly executed (timeout or unexpected error)<p>
-     *
-     * If you want to check if the command itself finished in error, use the method {@link PowerShell#isLastCommandInError()}
-     * instead
-     *
-     * @return boolean value
-     */
-    public boolean isError() {
-        return error;
-    }
+	/**
+	 * Retrieves the content returned by the executed command
+	 *
+	 * @return String value
+	 */
+	public String getCommandOutput() {
+		return commandOutput;
+	}
 
-    /**
-     * Retrieves the content returned by the executed command
-     *
-     * @return boolean value
-     */
-    public String getCommandOutput() {
-        return commandOutput;
-    }
+	/**
+	 * Retrieves the error content returned by the executed command if configured to split stdout and stderr
+	 *
+	 * @return String  value
+	 */
+	public String getErrorOutput() {
+		return errorOutput;
+	}
 
-    /**
-     * True if the command finished in timeout
-     *
-     * @return boolean value
-     */
-    public boolean isTimeout() {
-        return timeout;
-    }
+	/**
+	 * True if the command finished in timeout
+	 *
+	 * @return boolean value
+	 */
+	public boolean isTimeout() {
+		return timeout;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("PowerShellResponse [error=");
+		sb.append(error);
+		sb.append(", commandOutput=");
+		sb.append(commandOutput);
+		sb.append(", errorOutput=");
+		sb.append(errorOutput);
+		sb.append(", timeout=");
+		sb.append(timeout);
+		sb.append("]");
+		return sb.toString();
+	}
 }
